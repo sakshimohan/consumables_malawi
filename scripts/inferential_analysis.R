@@ -163,7 +163,7 @@ mlt_binom_fac <- glmmTMB(
   family = binomial,
   REML = TRUE
 )
-gen_res_plots(model_logit, "model_logit_diagnosis.jpeg")
+gen_res_plots(mlt_binom_fac, "mlt_binom_fac_diagnosis.jpeg")
 
 # III. Multilevel binomial  model with item and facility random effects
 mlt_binom_facitem <- glmmTMB(
@@ -175,6 +175,7 @@ mlt_binom_facitem <- glmmTMB(
   family = binomial,
   REML = TRUE
 )
+gen_res_plots(mlt_binom_facitem, "mlt_binom_facitem_diagnosis.jpeg")
 
 # IV. Multilevel beta model with item and facility level random effects
 regdf$available_prop[regdf$available_prop == 0] = 0.00000000000000000001
@@ -183,3 +184,17 @@ mlt_beta1 <- glmmTMB(available_prop ~ closing_bal + amc + dispensed
                                     + category + month + lndist_todh + lndist_torms
                                     + (1|fac_name/item_code), 
                                     data = regdf, ziformula=~1,family=list(family="beta",link="logit"))
+gen_res_plots(mlt_beta1, "mlt_beta1_diagnosis.jpeg")
+
+# --- 3.4 Plot results from the chosen model --- #
+#------------------------------------------------#
+# Multilevel binomial  model with item and facility random effects
+# 1. Full model representation
+plot_model(mixedeff_binom_item)
+
+# 2. Plot marginal effects
+plot_model(mlt_binom_facitem, type = "pred", terms = "category") # Program
+plot_model(mlt_binom_facitem, type = "pred", terms = "district") # District 
+plot_model(mlt_binom_facitem, type = "pred", terms = "month") # Month
+plot_model(mlt_binom_facitem, type = "pred", terms = "fac_type_tlo") # Level of care
+plot_model(model_lm, type = "pred", terms = "lndist_todh") # Distance from DHO
